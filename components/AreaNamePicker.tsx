@@ -1,18 +1,19 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
-  Button,
   FlatList,
+  Keyboard,
   Modal,
-  Text,
+  StyleSheet,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 
 import { active_areaname_api } from '@/constant/DXBConstant';
+import api from '@/Services/axiosInstance';
 import i18n from '@/Services/i18n';
+import RTLText from './RTLText';
 
 // هنا ضع رابط API الخاص بـ AreaName
 
@@ -32,9 +33,9 @@ const AreaNamePicker = ({ value, selectedLabel, onChange }: AreaNamePickerProps)
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [label, setLabel] = useState('');
- 
-  
-   const isArabic = i18n.t('lang') === 'ar';
+
+
+  const isArabic = i18n.t('lang') === 'ar';
 
   useEffect(() => {
     if (selectedLabel) {
@@ -53,14 +54,14 @@ const AreaNamePicker = ({ value, selectedLabel, onChange }: AreaNamePickerProps)
 
     setLoading(true);
     try {
-      const res = await axios.get(active_areaname_api, {
+      const res = await api.get(active_areaname_api, {
         params: {
           page: reset ? 1 : currentPage,
           limit: PAGE_SIZE,
           search: searchQuery,
         },
         headers: {
-          'Accept-Language': i18n.t('lang') , // 👈 هذا الهيدر الذي يفهمه السيرفر عادةً
+          'Accept-Language': i18n.t('lang'),
         },
       });
 
@@ -79,10 +80,11 @@ const AreaNamePicker = ({ value, selectedLabel, onChange }: AreaNamePickerProps)
   };
 
   const handleSelect = (item: any) => {
-   const label = `${item.areacode ?? ''} | ${isArabic ? item.arabicname ?? '' : item.englishname ?? ''}`;
+    const label = `${item.areacode ?? ''} | ${isArabic ? item.arabicname ?? '' : item.englishname ?? ''}`;
     onChange(item.id.toString(), label);
     setLabel(label);
     setModalVisible(false);
+      Keyboard.dismiss();
   };
 
   const renderFooter = () => {
@@ -90,60 +92,85 @@ const AreaNamePicker = ({ value, selectedLabel, onChange }: AreaNamePickerProps)
     return <ActivityIndicator size="small" color="#000" style={{ margin: 10 }} />;
   };
 
-  return (
-    <View>
-      <TouchableOpacity
-        onPress={() => setModalVisible(true)}
+ return (
+  <View> 
+  <TouchableOpacity
+    onPress={() => setModalVisible(true)}
+    style={{
+      borderWidth: 1,
+      borderColor: '#ccc',
+      padding: 10,
+      borderRadius: 5,
+      marginBottom: 10,
+    }}
+  >
+    <RTLText>{label || i18n.t('selectareaname')}</RTLText>
+  </TouchableOpacity>
+
+  {/* الـ Modal */}
+  <Modal visible={modalVisible} animationType="slide" transparent={false}>
+    <View style={{ flex: 1, padding: 16 }}>
+      <TextInput
+        placeholder={i18n.t('searchareas')}
+        value={searchQuery}
+        onChangeText={(text) => {
+          setSearchQuery(text);
+          setCurrentPage(1);
+          setHasMore(true);
+        }}
         style={{
           borderWidth: 1,
           borderColor: '#ccc',
           padding: 10,
-          borderRadius: 5,
           marginBottom: 10,
+          borderRadius: 5,
         }}
-      >
-        <Text>{label || i18n.t('selectareaname')}</Text>
-      </TouchableOpacity>
-
-      <Modal visible={modalVisible} animationType="slide">
-        <View style={{ flex: 1, padding: 16 }}>
-          <TextInput
-            placeholder={i18n.t('searchareas')}
-            value={searchQuery}
-            onChangeText={(text) => {
-              setSearchQuery(text);
-              setCurrentPage(1);
-              setHasMore(true);
-            }}
-            style={{
-              borderWidth: 1,
-              borderColor: '#ccc',
-              padding: 10,
-              marginBottom: 10,
-              borderRadius: 5,
-            }}
-          />
-
-          <FlatList
-            data={areaList}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => handleSelect(item)}>
-                <Text style={{ padding: 10 }}>
-                  {item.areacode} |  {isArabic ? item.arabicname : item.englishname}
-                </Text>
-              </TouchableOpacity>
-            )}
-            onEndReached={() => fetchAreas()}
-            onEndReachedThreshold={0.5}
-            ListFooterComponent={renderFooter}
-          />
-
-          <Button title={i18n.t('close')} onPress={() => setModalVisible(false)} />
-        </View>
-      </Modal>
+      />
+      <FlatList
+        data={areaList}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => handleSelect(item)}>
+            <RTLText style={{ padding: 10 }}>
+              {item.areacode} | {isArabic ? item.arabicname : item.englishname}
+            </RTLText>
+          </TouchableOpacity>
+        )}
+        onEndReached={() => fetchAreas()}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={renderFooter}
+        keyboardShouldPersistTaps="handled"
+      />
+      <View style={{ marginHorizontal: 20, marginTop: 10 }}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            Keyboard.dismiss();
+            setModalVisible(false);
+          }}
+        >
+          <RTLText style={styles.buttonText}>{i18n.t('close')}</RTLText>
+        </TouchableOpacity>
+      </View>
     </View>
-  );
+  </Modal>
+</View>
+);
+
 };
 
 export default AreaNamePicker;
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  }
+});

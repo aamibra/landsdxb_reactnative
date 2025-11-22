@@ -3,6 +3,7 @@ import AreaNamePicker from '@/components/AreaNamePicker';
 import FilePreviewModal from '@/components/FilePreviewModal';
 import PercentageInput from '@/components/PercentageInput';
 import { RadioInputField } from '@/components/RadioInputField ';
+import RTLText from '@/components/RTLText';
 import { applyMask, cleanNumber, numberCommas, numberWithCommas } from '@/constant/applyMask';
 import { creatunderconstpolicy_api, e, getunderconstpolicy_api, updateunderconstpolicy_api } from '@/constant/DXBConstant';
 import api from '@/Services/axiosInstance';
@@ -12,7 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Button, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Button, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import PagerView from 'react-native-pager-view';
 
 
@@ -20,7 +21,7 @@ import PagerView from 'react-native-pager-view';
 const SectionLabel = ({ title }: any) => {
   return (
     <View style={styles.labelContainer}>
-      <Text style={styles.labelText}>{title}</Text>
+      <RTLText style={styles.labelText}>{title}</RTLText>
     </View>
   );
 };
@@ -1077,7 +1078,7 @@ export default function UnderConstPolicy({ navigation, route }: any) {
       <PagerView style={styles.pagerView} initialPage={0} ref={pagerRef}>
         {/* الصفحة الأولى */}
         <ScrollView contentContainerStyle={styles.page} key="1">
-          <Text style={styles.header}>{i18n.t('underconstform')}</Text>
+          <RTLText style={styles.header}>{i18n.t('underconstform')}</RTLText>
 
           {/* قسم المعلومات الشخصية */}
           <AccordionSection
@@ -1085,17 +1086,17 @@ export default function UnderConstPolicy({ navigation, route }: any) {
             isCollapsed={collapse.applicant}
             toggle={() => toggleSection('applicant')}
           >
-            <Text style={styles.label}>{i18n.t('applicanttrn')}</Text>
+            <RTLText style={styles.label}>{i18n.t('applicanttrn')}</RTLText>
             <TextInput style={styles.input} placeholder={i18n.t('applicanttrn')} value={formData.applicanttrn} onChangeText={(text) => handleChange('applicanttrn', text)} />
-            <Text style={styles.label}>{i18n.t('applicantname')}</Text>
+            <RTLText style={styles.label}>{i18n.t('applicantname')}</RTLText>
             <TextInput style={styles.input} placeholder={i18n.t('applicantname')} value={formData.applicantname} onChangeText={(text) => handleChange('applicantname', text)} />
-            <Text style={styles.label}>{i18n.t('mobile')}</Text>
+            <RTLText style={styles.label}>{i18n.t('mobile')}</RTLText>
             <TextInput style={styles.input} placeholder={i18n.t('mobile')} value={formData.applicantmobile} onChangeText={(text) => handleChange('applicantmobile', applyMask(text, '(999) 999-9999'))} keyboardType="numeric" />
-            <Text style={styles.label}>{i18n.t('email')}</Text>
+            <RTLText style={styles.label}>{i18n.t('email')}</RTLText>
             <TextInput style={styles.input} placeholder={i18n.t('email')} value={formData.applicantemail} onChangeText={(text) => handleEmailChange('applicantemail', text)} onBlur={(text) => handleBlur('applicantemail')} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} />
-            <Text style={styles.label}>{i18n.t('deliveryaddress')}</Text>
+            <RTLText style={styles.label}>{i18n.t('deliveryaddress')}</RTLText>
             <TextInput style={styles.inputarea} placeholder={i18n.t('deliveryaddress')} value={formData.deliveryaddress} onChangeText={(text) => handleChange('deliveryaddress', text)} />
-            <Text style={styles.label}>{i18n.t('selectpurpose')}</Text>
+            <RTLText style={styles.label}>{i18n.t('selectpurpose')}</RTLText>
             <View style={styles.pickerWrapper}>
               <Picker
                 style={{ height: 70 }}
@@ -1112,7 +1113,7 @@ export default function UnderConstPolicy({ navigation, route }: any) {
                   ))}
               </Picker>
             </View>
-            <Text style={styles.label}>{i18n.t('selecttypeofvaluation')}</Text>
+            <RTLText style={styles.label}>{i18n.t('selecttypeofvaluation')}</RTLText>
             <View style={styles.pickerWrapper} >
               <Picker
                 style={{ height: 70 }}
@@ -1138,7 +1139,7 @@ export default function UnderConstPolicy({ navigation, route }: any) {
             toggle={() => toggleSection('realEstate')}
           >
             {/* Category Land */}
-            <Text style={styles.label}>{i18n.t('categoryland')}</Text>
+            <RTLText style={styles.label}>{i18n.t('categoryland')}</RTLText>
             <View style={styles.pickerWrapper}>
               <Picker
                 style={{ height: 70 }}
@@ -1152,7 +1153,7 @@ export default function UnderConstPolicy({ navigation, route }: any) {
             </View>
 
             {/* Land Type Number */}
-            <Text style={styles.label}>{i18n.t('landtypenumber')} </Text>
+            <RTLText style={styles.label}>{i18n.t('landtypenumber')} </RTLText>
             <View style={styles.pickerWrapper}>
               <Picker
                 style={{ height: 70 }}
@@ -1169,7 +1170,7 @@ export default function UnderConstPolicy({ navigation, route }: any) {
             {/* Show Plot No if landTypeNumber == "1" */}
             {formData.landtypenumber === "1" && (
               <View>
-                <Text style={styles.label}>{i18n.t('plotnumber')}</Text>
+                <RTLText style={styles.label}>{i18n.t('plotnumber')}</RTLText>
                 <TextInput
                   style={styles.input}
                   placeholder={i18n.t('plotnumber')}
@@ -1182,7 +1183,7 @@ export default function UnderConstPolicy({ navigation, route }: any) {
             {/* Show Municipality No if landTypeNumber == "2" */}
             {formData.landtypenumber === "2" && (
               <View>
-                <Text style={styles.label}>{i18n.t('municipalitynumber')}</Text>
+                <RTLText style={styles.label}>{i18n.t('municipalitynumber')}</RTLText>
                 <TextInput
                   style={styles.input}
                   placeholder={i18n.t('municipalitynumber')}
@@ -1194,7 +1195,7 @@ export default function UnderConstPolicy({ navigation, route }: any) {
                 />
               </View>
             )}
-            <Text style={styles.label}>{i18n.t('selectareaname')}</Text>
+            <RTLText style={styles.label}>{i18n.t('selectareaname')}</RTLText>
             <AreaNamePicker
               value={formData.areanameid}
               selectedLabel={formData.arealabel}
@@ -1202,20 +1203,20 @@ export default function UnderConstPolicy({ navigation, route }: any) {
                 setFormData({ ...formData, areanameid: id, arealabel: label });
               }}
             />
-            <Text style={styles.label}>{i18n.t('landareasqf')}</Text>
+            <RTLText style={styles.label}>{i18n.t('landareasqf')}</RTLText>
             <TextInput style={styles.input} placeholder={i18n.t('landareasqf')} value={formData.areasize} onBlur={(text) => handleCommaBlur('areasize', formData.areasize)} onChangeText={(text) => handleSmartChange('areasize', text)} keyboardType="numeric" />
-            <Text style={styles.label}>{i18n.t('landareasqm')}</Text>
+            <RTLText style={styles.label}>{i18n.t('landareasqm')}</RTLText>
             <TextInput style={styles.input} placeholder={i18n.t('landareasqm')} value={formData.landareasqm} onBlur={(text) => handleCommaBlur('landareasqm', formData.landareasqm)} onChangeText={(text) => handleSmartChange('landareasqm', text)} keyboardType="numeric" />
 
             {showExtraFields && (
               <View>
-                <Text style={styles.label}>{i18n.t('arearatio')}</Text>
+                <RTLText style={styles.label}>{i18n.t('arearatio')}</RTLText>
                 <TextInput style={styles.input} placeholder={i18n.t('arearatio')} value={formData.arearatio} onBlur={(text) => handleCommaBlur('arearatio', formData.arearatio)} onChangeText={(text) => handleSmartChange('arearatio', text)} keyboardType="numeric" />
-                <Text style={styles.label}>{i18n.t('ratioallowd')}</Text>
+                <RTLText style={styles.label}>{i18n.t('ratioallowd')}</RTLText>
                 <TextInput style={styles.input} placeholder={i18n.t('ratioallowd')} value={formData.areaallowed} onBlur={(text) => handleCommaBlur('areaallowed', formData.areaallowed)} onChangeText={(text) => handleSmartChange('areaallowed', text)} keyboardType="numeric" />
               </View>
             )}
-            <Text style={styles.label}>{i18n.t('selectusage')}</Text>
+            <RTLText style={styles.label}>{i18n.t('selectusage')}</RTLText>
             <View style={styles.pickerWrapper}>
               <Picker
                 style={{ height: 50 }}
@@ -1232,7 +1233,7 @@ export default function UnderConstPolicy({ navigation, route }: any) {
                   ))}
               </Picker>
             </View>
-            <Text style={styles.label}>{i18n.t('height')}</Text>
+            <RTLText style={styles.label}>{i18n.t('height')}</RTLText>
             <TextInput style={styles.input} placeholder={i18n.t('height')} value={formData.height} onChangeText={(text) => handleChange('height', text)} />
           </AccordionSection>
 
@@ -1242,7 +1243,7 @@ export default function UnderConstPolicy({ navigation, route }: any) {
             isCollapsed={collapse.underconst}
             toggle={() => toggleSection('underconst')}
           >
-            <Text style={styles.label}>{i18n.t('buildingtype')}</Text>
+            <RTLText style={styles.label}>{i18n.t('buildingtype')}</RTLText>
             <View style={styles.pickerWrapper} >
               <Picker
                 style={{ height: 70 }}
@@ -1261,29 +1262,29 @@ export default function UnderConstPolicy({ navigation, route }: any) {
             </View>
             {showNumberRoom && (
               <View>
-                <Text style={styles.label}>{i18n.t('numberofrooms')}</Text>
+                <RTLText style={styles.label}>{i18n.t('numberofrooms')}</RTLText>
                 <TextInput style={styles.input} placeholder={i18n.t('numberofrooms')} value={formData.numberroomlabor} onChangeText={(text) => handleSmartChange('numberroomlabor', text)} />
               </View>
             )}
-            <Text style={styles.label}>{i18n.t('buildingareasqf')}</Text>
+            <RTLText style={styles.label}>{i18n.t('buildingareasqf')}</RTLText>
             <TextInput style={styles.input} placeholder={i18n.t('sqf')} value={formData.buildingareasize} onBlur={(text) => handleCommaBlur('buildingareasize', formData.buildingareasize)} onChangeText={(text) => handleSmartChange('buildingareasize', text)} keyboardType="numeric" />
 
-            <Text style={styles.label}>{i18n.t('buildingareasqm')}</Text>
+            <RTLText style={styles.label}>{i18n.t('buildingareasqm')}</RTLText>
             <TextInput style={styles.input} placeholder={i18n.t('sqm')} value={formData.buildingareasizesqm} onBlur={(text) => handleCommaBlur('buildingareasizesqm', formData.buildingareasizesqm)} onChangeText={(text) => handleSmartChange('buildingareasizesqm', text)} keyboardType="numeric" />
 
-            <Text style={styles.label}>{i18n.t('revenueannual')}</Text>
+            <RTLText style={styles.label}>{i18n.t('revenueannual')}</RTLText>
             <TextInput style={styles.input} placeholder={i18n.t('revenueannual')} value={formData.annualrent} onBlur={(text) => handleCommaBlur('annualrent', formData.annualrent)} onChangeText={(text) => handleSmartChange('annualrent', text)} keyboardType="numeric" />
 
-            <Text style={styles.label}>{i18n.t('buildingage')}</Text>
+            <RTLText style={styles.label}>{i18n.t('buildingage')}</RTLText>
             <TextInput style={styles.input} placeholder={i18n.t('buildingage')} value={formData.buildingage} onChangeText={(text) => handleChange('buildingage', text)} />
 
-            <Text style={styles.label}>{i18n.t('unitcount')}</Text>
+            <RTLText style={styles.label}>{i18n.t('unitcount')}</RTLText>
             <TextInput style={styles.input} placeholder={i18n.t('unitcount')} value={formData.numberunite} onChangeText={(text) => handleChange('numberunite', text)} />
 
-            <Text style={styles.label}>{i18n.t('numberoffloors')}</Text>
+            <RTLText style={styles.label}>{i18n.t('numberoffloors')}</RTLText>
             <TextInput style={styles.input} placeholder={i18n.t('numberoffloors')} value={formData.numberfloor} onChangeText={(text) => handleChange('numberfloor', text)} />
 
-            <Text style={styles.label}>{i18n.t('baseevaluate')} </Text>
+            <RTLText style={styles.label}>{i18n.t('baseevaluate')} </RTLText>
             <View style={styles.pickerWrapper} >
               <Picker
                 style={{ height: 70 }}
@@ -1301,7 +1302,7 @@ export default function UnderConstPolicy({ navigation, route }: any) {
               </Picker>
             </View>
 
-            <Text style={styles.label}>{i18n.t('percentagecompletion')}</Text>
+            <RTLText style={styles.label}>{i18n.t('percentagecompletion')}</RTLText>
             <View style={styles.custominput} >
               <PercentageInput value={formData.percentcompletion} onChange={(text: any) => handleChange('percentcompletion', text)} />
             </View>
@@ -1314,21 +1315,21 @@ export default function UnderConstPolicy({ navigation, route }: any) {
             isCollapsed={collapse.documents}
             toggle={() => toggleSection('documents')}
           >
-            <Text style={styles.label}>{i18n.t('sitemap')}</Text>
+            <RTLText style={styles.label}>{i18n.t('sitemap')}</RTLText>
             <TouchableOpacity style={styles.uploadButton} onPress={() => pickDocument('siteMap')}>
-              <Text>{formData.sitemapname || (formData.siteMap ? i18n.t('sitemapuploaded') : i18n.t('uploadsitemap'))}</Text>
+              <RTLText>{formData.sitemapname || (formData.siteMap ? i18n.t('sitemapuploaded') : i18n.t('uploadsitemap'))}</RTLText>
             </TouchableOpacity>
-            <Text style={styles.label}>{i18n.t('titledeed')}</Text>
+            <RTLText style={styles.label}>{i18n.t('titledeed')}</RTLText>
             <TouchableOpacity style={styles.uploadButton} onPress={() => pickDocument('titleDeed')}>
-              <Text>{formData.titledeedname || (formData.titleDeed ? i18n.t('titledeeduploaded') : i18n.t('uploadtitledeed'))}</Text>
+              <RTLText>{formData.titledeedname || (formData.titleDeed ? i18n.t('titledeeduploaded') : i18n.t('uploadtitledeed'))}</RTLText>
             </TouchableOpacity>
-            <Text style={styles.label}>{i18n.t('otherdocument')}</Text>
+            <RTLText style={styles.label}>{i18n.t('otherdocument')}</RTLText>
             <TouchableOpacity style={styles.uploadButton} onPress={() => pickDocument('otherDoc')}>
-              <Text>{formData.otherdocumentname || (formData.otherDoc ? i18n.t('otherdocumentuploaded') : i18n.t('uploadotherdocument'))}</Text>
+              <RTLText>{formData.otherdocumentname || (formData.otherDoc ? i18n.t('otherdocumentuploaded') : i18n.t('uploadotherdocument'))}</RTLText>
             </TouchableOpacity>
-            <Text style={styles.label}>{i18n.t('consultletter')}</Text>
+            <RTLText style={styles.label}>{i18n.t('consultletter')}</RTLText>
             <TouchableOpacity style={styles.uploadButton} onPress={() => pickDocument('Consltletter')}>
-              <Text>{formData.consultantlettername || (formData.Consltletter ? i18n.t('consultletteruploaded') : i18n.t('uploadconsultletter'))}</Text>
+              <RTLText>{formData.consultantlettername || (formData.Consltletter ? i18n.t('consultletteruploaded') : i18n.t('uploadconsultletter'))}</RTLText>
             </TouchableOpacity>
 
             {showPreviewButton && (
@@ -1344,7 +1345,7 @@ export default function UnderConstPolicy({ navigation, route }: any) {
 
         {/* الصفحة الثانية - كما كانت */}
         <ScrollView contentContainerStyle={styles.page} key="2">
-          <Text style={styles.header}>{i18n.t('underconstevaluation')} </Text>
+          <RTLText style={styles.header}>{i18n.t('underconstevaluation')} </RTLText>
 
           <AccordionSection
             title={i18n.t('valuedependcost')}
@@ -1355,29 +1356,29 @@ export default function UnderConstPolicy({ navigation, route }: any) {
 
             {showBuildArea && showExtraFields && (
               <View>
-                <Text style={styles.label}>{i18n.t('buildarea')}</Text>
+                <RTLText style={styles.label}>{i18n.t('buildarea')}</RTLText>
                 <TextInput style={styles.input} placeholder={i18n.t('buildarea')} value={formData.efratio} onBlur={() => handleCommaBlur('efratio', formData.efratio)} onChangeText={(text) => handleSmartChange('efratio', text)} keyboardType="numeric" />
               </View>
             )}
 
-            <Text style={styles.label}>{i18n.t('pricesqf')}</Text>
+            <RTLText style={styles.label}>{i18n.t('pricesqf')}</RTLText>
             <TextInput style={styles.input} placeholder={i18n.t('pricesqf')} value={formData.landareaprice} onBlur={(text) => handleCommaBlur('landareaprice', formData.landareaprice)} onChangeText={(text) => handleSmartChange('landareaprice', text)} keyboardType="numeric" />
-            <Text style={styles.label}>{i18n.t('pricesqm')}</Text>
+            <RTLText style={styles.label}>{i18n.t('pricesqm')}</RTLText>
             <TextInput style={styles.input} placeholder={i18n.t('pricesqm')} value={formData.landareapricesqm} onBlur={(text) => handleCommaBlur('landareapricesqm', formData.landareapricesqm)} onChangeText={(text) => handleSmartChange('landareapricesqm', text)} keyboardType="numeric" />
-            <Text style={styles.label}>{i18n.t('grossvalue')}</Text>
+            <RTLText style={styles.label}>{i18n.t('grossvalue')}</RTLText>
             <TextInput style={styles.input} placeholder={i18n.t('grossvalue')} value={formData.landareagrossvalue} onBlur={(text) => handleCommaBlur('landareagrossvalue', formData.landareagrossvalue)} onChangeText={(text) => handleGrossValueChange('landareagrossvalue', text)} keyboardType="numeric" />
 
             <SectionLabel title={i18n.t('accordingtobuilding')} />
-            <Text style={styles.label}>{i18n.t('pricesqf')}</Text>
+            <RTLText style={styles.label}>{i18n.t('pricesqf')}</RTLText>
             <TextInput style={styles.input} placeholder={i18n.t('pricesqf')} value={formData.buildareaprice} onBlur={(text) => handleCommaBlur('buildareaprice', formData.buildareaprice)} onChangeText={(text) => handleSmartChange('buildareaprice', text)} keyboardType="numeric" />
-            <Text style={styles.label}>{i18n.t('pricesqm')}</Text>
+            <RTLText style={styles.label}>{i18n.t('pricesqm')}</RTLText>
             <TextInput style={styles.input} placeholder={i18n.t('pricesqm')} value={formData.buildareapricesqm} onBlur={(text) => handleCommaBlur('buildareapricesqm', formData.buildareapricesqm)} onChangeText={(text) => handleSmartChange('buildareapricesqm', text)} keyboardType="numeric" />
-            <Text style={styles.label}>{i18n.t('grossvalue')}</Text>
+            <RTLText style={styles.label}>{i18n.t('grossvalue')}</RTLText>
             <TextInput style={styles.input} placeholder={i18n.t('grossvalue')} value={formData.buildareagrossvalue} onBlur={(text) => handleCommaBlur('buildareagrossvalue', formData.buildareagrossvalue)} onChangeText={(text) => handleGrossValueChange('buildareagrossvalue', text)} keyboardType="numeric" />
             <View style={styles.dottedLine} />
             <View style={styles.fieldsContainer}>
               <View style={styles.fieldRow}>
-                <Text style={[styles.label, { marginRight: 5 }]} >{i18n.t('grossvaluebuild')}</Text>
+                <RTLText style={[styles.label, { marginRight: 5 }]} >{i18n.t('grossvaluebuild')}</RTLText>
                 <TextInput
                   style={[styles.input, { marginLeft: 5 }]}
                   keyboardType="numeric"
@@ -1387,7 +1388,7 @@ export default function UnderConstPolicy({ navigation, route }: any) {
               </View>
 
               <View style={styles.fieldRow}>
-                <Text style={[styles.label, { marginRight: 5 }]} >{i18n.t('percentagecompletion')}</Text>
+                <RTLText style={[styles.label, { marginRight: 5 }]} >{i18n.t('percentagecompletion')}</RTLText>
                 <TextInput
                   style={[styles.input, { marginLeft: 5 }]}
                   keyboardType="numeric"
@@ -1397,7 +1398,7 @@ export default function UnderConstPolicy({ navigation, route }: any) {
               </View>
 
               <View style={styles.fieldRow}>
-                <Text style={[styles.label, { marginRight: 5 }]} >{i18n.t('grossvalue')}</Text>
+                <RTLText style={[styles.label, { marginRight: 5 }]} >{i18n.t('grossvalue')}</RTLText>
                 <TextInput
                   style={[styles.input, { marginLeft: 5 }]}
                   keyboardType="numeric"
@@ -1407,7 +1408,7 @@ export default function UnderConstPolicy({ navigation, route }: any) {
               </View>
             </View>
 
-            <Text style={styles.label}>{i18n.t('precent')}</Text>
+            <RTLText style={styles.label}>{i18n.t('precent')}</RTLText>
             <View style={styles.custominput} >
               <PercentageInput value={formData.percentcost} onChange={(text: any) => handleSmartChange('percentcost', text)} />
             </View>
@@ -1430,7 +1431,7 @@ export default function UnderConstPolicy({ navigation, route }: any) {
             isCollapsed={collapse.dependincome}
             toggle={() => toggleSection('dependincome')}
           >
-            <Text style={styles.label}>{i18n.t('precent')} </Text>
+            <RTLText style={styles.label}>{i18n.t('precent')} </RTLText>
             <View style={styles.custominput} >
               <PercentageInput value={formData.incomepercent} onChange={(text: any) => handleSmartChange('incomepercent', text)} />
             </View>
@@ -1467,7 +1468,7 @@ export default function UnderConstPolicy({ navigation, route }: any) {
             isCollapsed={collapse.finalvalue}
             toggle={() => toggleSection('finalvalue')}
           >
-            <Text style={styles.label}>{i18n.t('selectionvalue')}</Text>
+            <RTLText style={styles.label}>{i18n.t('selectionvalue')}</RTLText>
             <TextInput
               style={styles.input}
               placeholder={i18n.t('selectionvalue')}
@@ -1477,7 +1478,7 @@ export default function UnderConstPolicy({ navigation, route }: any) {
               keyboardType="numeric"
             />
 
-            <Text style={styles.label}>{i18n.t('reasonofmodification')} </Text>
+            <RTLText style={styles.label}>{i18n.t('reasonofmodification')} </RTLText>
             <TextInput
               style={styles.inputarea}
               multiline
@@ -1487,7 +1488,7 @@ export default function UnderConstPolicy({ navigation, route }: any) {
             />
             <View style={styles.dottedLine} />
             {/* Is Show Certificate Note */}
-            <Text style={styles.label}>{i18n.t('showcertificatenote')}</Text>
+            <RTLText style={styles.label}>{i18n.t('showcertificatenote')}</RTLText>
             <View style={styles.pickerWrapper}>
               <Picker
                 style={{ height: 70 }}
@@ -1498,7 +1499,7 @@ export default function UnderConstPolicy({ navigation, route }: any) {
                 <Picker.Item label={i18n.t('no')} value="false" />
               </Picker>
             </View>
-            <Text style={styles.label}>{i18n.t('note')}</Text>
+            <RTLText style={styles.label}>{i18n.t('note')}</RTLText>
             <TextInput style={[styles.input, { height: 100 }]} placeholder={i18n.t('note')} multiline value={formData.note} onChangeText={(text) => handleChange('note', text)} />
           </AccordionSection>
         
@@ -1507,7 +1508,7 @@ export default function UnderConstPolicy({ navigation, route }: any) {
             isCollapsed={collapse.certificate}
             toggle={() => toggleSection('certificate')}
           >
-            <Text style={styles.label}>{i18n.t('certificatenote')}</Text>
+            <RTLText style={styles.label}>{i18n.t('certificatenote')}</RTLText>
             <TextInput
               style={[styles.input, { height: 100 }]}
               placeholder={i18n.t('printcertificatenote')}

@@ -1,5 +1,6 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { I18nManager, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
+const isRTL = I18nManager.isRTL;
 
 export const AccordionSection = ({ title, children, isCollapsed, toggle }) => (
   <View style={styles.accordionContainer}>
@@ -25,11 +26,13 @@ const styles = StyleSheet.create({
   },
   accordionHeader: {
     backgroundColor: '#f0f0f0',
+    //flexDirection: "row",
     padding: 10,
   },
   accordionHeaderText: {
     fontWeight: 'bold',
-    fontSize: 16 
+    writingDirection: I18nManager.isRTL ? "rtl" : "ltr",
+    fontSize: 16 , 
   },
   accordionContent: {
     padding: 10,

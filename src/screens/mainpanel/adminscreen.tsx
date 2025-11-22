@@ -45,8 +45,6 @@ const AdminScreen = ({ navigation, route }: any) => {
     }
 
 
-
-
     return (
         <Drawer.Navigator
             initialRouteName="Form"
@@ -56,10 +54,17 @@ const AdminScreen = ({ navigation, route }: any) => {
                 drawerPosition: isRTL ? 'right' : 'left',
                 drawerType: 'slide',
                 drawerStyle: {
-                   // width: screenWidth * 0.8,
+                    // width: screenWidth * 0.8,
                     backgroundColor: '#fff',
                     //  flexDirection: 'row-reverse',
                     //   direction: 'rtl'
+                },
+                drawerLabelStyle: {
+                    // textAlign: I18nManager.isRTL ? 'right' : 'left',
+                    writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
+                },
+                drawerItemStyle: {
+                    // flexDirection: I18nManager.isRTL ? 'row-reverse' : 'row',
                 },
                 overlayColor: 'transparent',
             }}
@@ -121,7 +126,7 @@ const AdminScreen = ({ navigation, route }: any) => {
                 name="Setting"
                 component={SettingScreen}
                 options={{
-                    title: isRTL ? 'الإعدادات' : 'Setting',
+                    title: i18n.t('setting')  ,
                     drawerIcon: ({ color, size }) => (
                         <Ionicons name="settings" size={size} color={color} />
                     ),

@@ -2,7 +2,7 @@
 import i18n, { loadLanguage } from '@/Services/i18n';
 import * as NavigationBar from 'expo-navigation-bar';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, StatusBar, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, I18nManager, StatusBar, StyleSheet, View } from 'react-native';
 import 'react-native-gesture-handler';
 import Reanimated from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -200,7 +200,7 @@ export default function App() {
 
       <StatusBar backgroundColor="#4a90e2" barStyle="light-content" translucent={false} />
       <SafeAreaView style={{ flex: 1, flexDirection: 'row' , backgroundColor: '#4a90e2' }}>
-        <NavigationContainer ref={navigationRef}>
+        <NavigationContainer direction={I18nManager.isRTL ? "rtl" : "ltr"} ref={navigationRef}>
           <ActionSheetProvider>
             <Stack.Navigator  detachInactiveScreens={true} screenOptions={{ detachPreviousScreen: true, }}  >
               <Stack.Screen name="splashscreen" component={SplashScreen} options={{ headerShown: false, animation: 'none' }} />

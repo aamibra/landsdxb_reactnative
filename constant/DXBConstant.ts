@@ -1,5 +1,5 @@
-export const rooturl = 'https://old.landsdxb.com';
-const baseurl        = 'https://old.landsdxb.com/api/';
+export const rooturl = 'http://192.168.100.23:5263';
+const baseurl        = 'http://192.168.100.23:5263/api/';
 
 export const CACHE_KEY_DropDownMenu  = 'dropdownMenus';
 export const DROPDOWN_CACHE_KEY = 'dropdown_cache';

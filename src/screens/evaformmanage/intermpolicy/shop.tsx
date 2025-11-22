@@ -2,6 +2,7 @@ import { AccordionSection } from '@/components/AccordionSection';
 import AreaNamePicker from '@/components/AreaNamePicker';
 import FilePreviewModal from '@/components/FilePreviewModal';
 import PercentageInput from '@/components/PercentageInput';
+import RTLText from '@/components/RTLText';
 import { applyMask } from '@/constant/applyMask';
 import { e, evaluateshopform_api, getshopform_api } from '@/constant/DXBConstant';
 import { getDropdownDataWithCache } from '@/Services/CacheService';
@@ -9,7 +10,7 @@ import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Button, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Button, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import PagerView from 'react-native-pager-view';
 
 
@@ -17,7 +18,7 @@ import PagerView from 'react-native-pager-view';
 const SectionLabel = ({ title }: any) => {
   return (
     <View style={styles.labelContainer}>
-      <Text style={styles.labelText}>{title}</Text>
+      <RTLText style={styles.labelText}>{title}</RTLText>
     </View>
   );
 };
@@ -803,24 +804,24 @@ export default function ShopPolicy({ navigation, route }: any) {
       <PagerView style={styles.pagerView} initialPage={0} ref={pagerRef}>
         {/* الصفحة الأولى */}
         <ScrollView contentContainerStyle={styles.page} key="1">
-          <Text style={styles.header}>Shop Form</Text>
+          <RTLText style={styles.header}>Shop Form</RTLText>
           {/* قسم المعلومات الشخصية */}
           <AccordionSection
             title="Applicant Information"
             isCollapsed={collapse.applicant}
             toggle={() => toggleSection('applicant')}
           >
-            <Text style={styles.label}>Applicant TRN</Text>
+            <RTLText style={styles.label}>Applicant TRN</RTLText>
             <TextInput style={styles.input} placeholder="Applicant TRN" value={formData.applicanttrn} onChangeText={(text) => handleChange('applicanttrn', text)} />
-            <Text style={styles.label}>Applicant Name</Text>
+            <RTLText style={styles.label}>Applicant Name</RTLText>
             <TextInput style={styles.input} placeholder="Applicant Name" value={formData.applicantname} onChangeText={(text) => handleChange('applicantname', text)} />
-            <Text style={styles.label}>Mobile</Text>
+            <RTLText style={styles.label}>Mobile</RTLText>
             <TextInput style={styles.input} placeholder="Mobile" value={formData.applicantmobile} onChangeText={(text) => handleChange('applicantmobile', applyMask(text, '(999) 999-9999'))} keyboardType="numeric" />
-            <Text style={styles.label}>Email</Text>
+            <RTLText style={styles.label}>Email</RTLText>
             <TextInput style={styles.input} placeholder="Email" value={formData.applicantemail} onChangeText={(text) => handleEmailChange('applicantemail', text)} onBlur={(text) => handleBlur('applicantemail')} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} />
-            <Text style={styles.label}>Delivery Address</Text>
+            <RTLText style={styles.label}>Delivery Address</RTLText>
             <TextInput style={styles.inputarea} placeholder="Delivery Address" value={formData.deliveryaddress} onChangeText={(text) => handleChange('deliveryaddress', text)} />
-            <Text style={styles.label}>Select Purpose</Text>
+            <RTLText style={styles.label}>Select Purpose</RTLText>
             <View style={styles.pickerWrapper}>
               <Picker
                 style={{ height: 70 }}
@@ -837,7 +838,7 @@ export default function ShopPolicy({ navigation, route }: any) {
                   ))}
               </Picker>
             </View>
-            <Text style={styles.label}>Select Type Of Valuation</Text>
+            <RTLText style={styles.label}>Select Type Of Valuation</RTLText>
             <View style={styles.pickerWrapper} >
               <Picker
                 style={{ height: 70 }}
@@ -863,7 +864,7 @@ export default function ShopPolicy({ navigation, route }: any) {
             toggle={() => toggleSection('realEstate')}
           >
             {/* Category Land */}
-            <Text style={styles.label}>Category Land</Text>
+            <RTLText style={styles.label}>Category Land</RTLText>
             <View style={styles.pickerWrapper}>
               <Picker
                 style={{ height: 70 }}
@@ -877,7 +878,7 @@ export default function ShopPolicy({ navigation, route }: any) {
             </View>
 
             {/* Land Type Number */}
-            <Text style={styles.label}>Land Type Number</Text>
+            <RTLText style={styles.label}>Land Type Number</RTLText>
             <View style={styles.pickerWrapper}>
               <Picker
                 style={{ height: 70 }}
@@ -894,7 +895,7 @@ export default function ShopPolicy({ navigation, route }: any) {
             {/* Show Plot No if landTypeNumber == "1" */}
             {formData.landtypeno === "1" && (
               <View>
-                <Text style={styles.label}>Plot Number</Text>
+                <RTLText style={styles.label}>Plot Number</RTLText>
                 <TextInput
                   style={styles.input}
                   placeholder="Plot No"
@@ -907,7 +908,7 @@ export default function ShopPolicy({ navigation, route }: any) {
             {/* Show Municipality No if landTypeNumber == "2" */}
             {formData.landtypeno === "2" && (
               <View>
-                <Text style={styles.label}>Municipality No</Text>
+                <RTLText style={styles.label}>Municipality No</RTLText>
                 <TextInput
                   style={styles.input}
                   placeholder="Municipality No"
@@ -919,7 +920,7 @@ export default function ShopPolicy({ navigation, route }: any) {
                 />
               </View>
             )}
-            <Text style={styles.label}>Select Area Name</Text>
+            <RTLText style={styles.label}>Select Area Name</RTLText>
             <AreaNamePicker
               value={formData.areanameid}
               selectedLabel={formData.arealabel}
@@ -927,20 +928,20 @@ export default function ShopPolicy({ navigation, route }: any) {
                 setFormData({ ...formData, areanameid: id, arealabel: label });
               }}
             />
-            <Text style={styles.label}>Land Area (SQF)</Text>
+            <RTLText style={styles.label}>Land Area (SQF)</RTLText>
             <TextInput style={styles.input} placeholder="Land Area (SQF)" value={formData.areasize} onChangeText={(text) => handleSmartChange('areasize', text)} keyboardType="numeric" />
-            <Text style={styles.label}>Land Area (SQM)</Text>
+            <RTLText style={styles.label}>Land Area (SQM)</RTLText>
             <TextInput style={styles.input} placeholder="Land Area (SQM)" value={formData.landareasqm} onChangeText={(text) => handleSmartChange('landareasqm', text)} keyboardType="numeric" />
 
             {showExtraFields && (
               <View>
-                <Text style={styles.label}>Area Ratio</Text>
+                <RTLText style={styles.label}>Area Ratio</RTLText>
                 <TextInput style={styles.input} placeholder="FAR" value={formData.arearatio} onChangeText={(text) => handleSmartChange('arearatio', text)} keyboardType="numeric" />
-                <Text style={styles.label}>Ratio Allowed</Text>
+                <RTLText style={styles.label}>Ratio Allowed</RTLText>
                 <TextInput style={styles.input} placeholder="Ratio Allowed" value={formData.areaallowed} onChangeText={(text) => handleSmartChange('areaallowed', text)} keyboardType="numeric" />
               </View>
             )}
-            <Text style={styles.label}>Select Usage</Text>
+            <RTLText style={styles.label}>Select Usage</RTLText>
             <View style={styles.pickerWrapper}>
               <Picker
                 style={{ height: 50 }}
@@ -957,7 +958,7 @@ export default function ShopPolicy({ navigation, route }: any) {
                   ))}
               </Picker>
             </View>
-            <Text style={styles.label}>Height</Text>
+            <RTLText style={styles.label}>Height</RTLText>
             <TextInput style={styles.input} placeholder="Height" value={formData.height} onChangeText={(text) => handleChange('height', text)} />
           </AccordionSection>
 
@@ -967,7 +968,7 @@ export default function ShopPolicy({ navigation, route }: any) {
             isCollapsed={collapse.shop}
             toggle={() => toggleSection('shop')}
           >
-            <Text style={styles.label}>Shop Type</Text>
+            <RTLText style={styles.label}>Shop Type</RTLText>
             <View style={styles.pickerWrapper}>
               <Picker
                 style={{ height: 70 }}
@@ -979,7 +980,7 @@ export default function ShopPolicy({ navigation, route }: any) {
               </Picker>
             </View>
 
-            <Text style={styles.label}>Main Project Name</Text>
+            <RTLText style={styles.label}>Main Project Name</RTLText>
             <View style={styles.pickerWrapper}>
               <Picker
                 style={{ height: 70 }}
@@ -996,7 +997,7 @@ export default function ShopPolicy({ navigation, route }: any) {
                   ))}
               </Picker>
             </View>
-            <Text style={styles.label}>Sub Project</Text>
+            <RTLText style={styles.label}>Sub Project</RTLText>
             <View style={styles.pickerWrapper}>
               <Picker
                 style={{ height: 70 }}
@@ -1013,19 +1014,19 @@ export default function ShopPolicy({ navigation, route }: any) {
                   ))}
               </Picker>
             </View>
-            <Text style={styles.label}>Date Completion</Text>
+            <RTLText style={styles.label}>Date Completion</RTLText>
             <TextInput style={styles.input} placeholder="Date Completion" value={formData.completiondate} onChangeText={(text) => handleChange('completiondate', text)} />
-            <Text style={styles.label}>Building Number</Text>
+            <RTLText style={styles.label}>Building Number</RTLText>
             <TextInput style={styles.input} placeholder="Building Number" value={formData.buildingnumber} onChangeText={(text) => handleChange('buildingnumber', text)} />
-            <Text style={styles.label}>number of floors</Text>
+            <RTLText style={styles.label}>number of floors</RTLText>
             <TextInput style={styles.input} placeholder="Number Of Floors" value={formData.numberoffloors} onChangeText={(text) => handleChange('numberoffloors', text)} />
-            <Text style={styles.label}>Unit Number</Text>
+            <RTLText style={styles.label}>Unit Number</RTLText>
             <TextInput style={styles.input} placeholder="Unit Number" value={formData.unitnumber} onChangeText={(text) => handleChange('unitnumber', text)} />
-            <Text style={styles.label}>Unit Area (SQF)</Text>
+            <RTLText style={styles.label}>Unit Area (SQF)</RTLText>
             <TextInput style={styles.input} placeholder="Unit Area (SQF)" value={formData.sizeunite} onChangeText={(text) => handleSmartChange('sizeunite', text)} keyboardType="numeric" />
-            <Text style={styles.label}>Unit Area (SQM)</Text>
+            <RTLText style={styles.label}>Unit Area (SQM)</RTLText>
             <TextInput style={styles.input} placeholder="Unit Area (SQM)" value={formData.sizeunitesqm} onChangeText={(text) => handleSmartChange('sizeunitesqm', text)} keyboardType="numeric" />
-            <Text style={styles.label}>Unit Status </Text>
+            <RTLText style={styles.label}>Unit Status </RTLText>
             <View style={styles.pickerWrapper}>
               <Picker
                 style={{ height: 70 }}
@@ -1044,7 +1045,7 @@ export default function ShopPolicy({ navigation, route }: any) {
             </View>
             {formData.unitstatus == '1' && (
               <View>
-                <Text style={styles.label}>Is It Rented</Text>
+                <RTLText style={styles.label}>Is It Rented</RTLText>
                 <View style={styles.pickerWrapper}>
                   <Picker
                     style={{ height: 70 }}
@@ -1059,13 +1060,13 @@ export default function ShopPolicy({ navigation, route }: any) {
 
                 {formData.isrent == '1' && (
                   <View>
-                    <Text style={styles.label}>Rent Value</Text>
+                    <RTLText style={styles.label}>Rent Value</RTLText>
                     <TextInput style={styles.input} placeholder="Rent Value" value={formData.rentvalue} onChangeText={(text) => handleChange('rentvalue', text)} onBlur={() => handleCommaBlur('rentvalue', formData.rentvalue)} keyboardType="numeric" />
                   </View>
                 )}
               </View>
             )}
-            <Text style={styles.label}>Shell Core</Text>
+            <RTLText style={styles.label}>Shell Core</RTLText>
             <View style={styles.pickerWrapper}>
               <Picker
                 style={{ height: 70 }}
@@ -1084,17 +1085,17 @@ export default function ShopPolicy({ navigation, route }: any) {
             isCollapsed={collapse.documents}
             toggle={() => toggleSection('documents')}
           >
-            <Text style={styles.label}>Site Map</Text>
+            <RTLText style={styles.label}>Site Map</RTLText>
             <TouchableOpacity style={styles.uploadButton} onPress={() => pickDocument('siteMap')}>
-              <Text>{formData.sitemapname || (formData.siteMap ? 'Site Map Uploaded' : 'Upload Site Map')}</Text>
+              <RTLText>{formData.sitemapname || (formData.siteMap ? 'Site Map Uploaded' : 'Upload Site Map')}</RTLText>
             </TouchableOpacity>
-            <Text style={styles.label}>Title Deed</Text>
+            <RTLText style={styles.label}>Title Deed</RTLText>
             <TouchableOpacity style={styles.uploadButton} onPress={() => pickDocument('titleDeed')}>
-              <Text>{formData.titledeedname || (formData.titleDeed ? 'Title Deed Uploaded' : 'Upload Title Deed')}</Text>
+              <RTLText>{formData.titledeedname || (formData.titleDeed ? 'Title Deed Uploaded' : 'Upload Title Deed')}</RTLText>
             </TouchableOpacity>
-            <Text style={styles.label}>Other Document</Text>
+            <RTLText style={styles.label}>Other Document</RTLText>
             <TouchableOpacity style={styles.uploadButton} onPress={() => pickDocument('otherDoc')}>
-              <Text>{formData.otherdocumentname || (formData.otherDoc ? 'Other Document Uploaded' : 'Upload Other Document')}</Text>
+              <RTLText>{formData.otherdocumentname || (formData.otherDoc ? 'Other Document Uploaded' : 'Upload Other Document')}</RTLText>
             </TouchableOpacity>
             {showPreviewButton && (
               <View style={{ margin: 10 }}>
@@ -1107,7 +1108,7 @@ export default function ShopPolicy({ navigation, route }: any) {
         </ScrollView>
         {/* الصفحة الثانية - كما كانت */}
         <ScrollView contentContainerStyle={styles.page} key="2">
-          <Text style={styles.header}>Evaluation  Shop</Text>
+          <RTLText style={styles.header}>Evaluation  Shop</RTLText>
 
           <AccordionSection
             title="Value Depend Market"
@@ -1115,26 +1116,26 @@ export default function ShopPolicy({ navigation, route }: any) {
             toggle={() => toggleSection('dependmarket')}
           >
             <SectionLabel title="Price (Shop Area)" />
-            <Text style={styles.label}>Price SQF</Text>
+            <RTLText style={styles.label}>Price SQF</RTLText>
             <TextInput style={styles.input} placeholder="Price (SQF)" value={formData.areaprice} onChangeText={(text) => handleSmartChange('areaprice', text)} keyboardType="numeric" />
-            <Text style={styles.label}>Price SQM</Text>
+            <RTLText style={styles.label}>Price SQM</RTLText>
             <TextInput style={styles.input} placeholder="Price (SQM)" value={formData.areapricesqm} onChangeText={(text) => handleSmartChange('areapricesqm', text)} keyboardType="numeric" />
-            <Text style={styles.label}>Gross Value</Text>
+            <RTLText style={styles.label}>Gross Value</RTLText>
             <TextInput style={styles.input} placeholder="Gross Value" value={formData.grossvalue} onChangeText={(text) => handleChange('grossvalue', text)} keyboardType="numeric" />
             <SectionLabel title="Value Depend Income" />
-            <Text style={styles.label}>Expected Income</Text>
+            <RTLText style={styles.label}>Expected Income</RTLText>
             <TextInput style={styles.input} placeholder="Expected Income" value={formData.expectedincome} onChangeText={(text) => handleSmartChange('expectedincome', text)} keyboardType="numeric" />
-            <Text style={styles.label}>Precent</Text>
+            <RTLText style={styles.label}>Precent</RTLText>
             <View style={styles.custominput} >
               <PercentageInput value={formData.incomepercent} onChange={(text: any) => handleSmartChange('incomepercent', text)} />
             </View>
-            <Text style={styles.label}>Gross Value</Text>
+            <RTLText style={styles.label}>Gross Value</RTLText>
             <TextInput style={styles.input} placeholder="Gross Value" value={formData.incomegrossery} onChangeText={(text) => handleChange('incomegrossery', text)} keyboardType="numeric" />
 
             <View style={styles.dottedLine} />
 
             {/* certificat note */}
-            <Text style={styles.label}>show certificat note</Text>
+            <RTLText style={styles.label}>show certificat note</RTLText>
             <View style={styles.pickerWrapper}>
               <Picker
                 style={{ height: 70 }}
@@ -1145,7 +1146,7 @@ export default function ShopPolicy({ navigation, route }: any) {
                 <Picker.Item label="no" value="false" />
               </Picker>
             </View>
-            <Text style={styles.label}>Note</Text>
+            <RTLText style={styles.label}>Note</RTLText>
             <TextInput style={[styles.input, { height: 100 }]} placeholder="Note" multiline value={formData.note} onChangeText={(text) => handleChange('note', text)} />
 
           </AccordionSection>
@@ -1155,7 +1156,7 @@ export default function ShopPolicy({ navigation, route }: any) {
             isCollapsed={collapse.certificate}
             toggle={() => toggleSection('certificate')}
           >
-            <Text style={styles.label}>Print Certificate Note</Text>
+            <RTLText style={styles.label}>Print Certificate Note</RTLText>
             <TextInput
               style={[styles.input, { height: 100 }]}
               placeholder="Print Certificate Note"

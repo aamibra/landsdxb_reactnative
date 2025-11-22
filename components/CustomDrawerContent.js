@@ -1,29 +1,31 @@
 // components/CustomDrawerContent.js
+import RTLText from '@/components/RTLText';
 import i18n, { setLanguage } from '@/Services/i18n';
 import { logoutUser } from '@/src/screens/authentication/logout';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
 import { useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { I18nManager, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
+const isRTL = I18nManager.isRTL;
 
-export default function CustomDrawerContent(props) { 
-  const [isArabic, setIsArabic] = useState(false); 
+export default function CustomDrawerContent(props) {
+  const [isArabic, setIsArabic] = useState(false);
   const [firstName, setFirstName] = useState(null);
   const [lastName, setLastName] = useState(null);
   const [avatarUrl, setAvatarUrl] = useState(null);
-  const [currentLanguage, setCurrentLanguage] = useState("en"); 
+  const [currentLanguage, setCurrentLanguage] = useState("en");
   const switchLanguage = currentLanguage === "en" ? "ar" : "en";
   const defaultAvatar = require('@/assets/images/user-placeholder.png');
 
   useEffect(() => {
     const fetchLanguage = async () => {
       try {
-        const storedLanguage = await AsyncStorage.getItem('appLanguage'); 
-        const lang = storedLanguage || 'en';  
-        setCurrentLanguage(lang);   
-        setIsArabic(lang === 'ar'); 
+        const storedLanguage = await AsyncStorage.getItem('appLanguage');
+        const lang = storedLanguage || 'en';
+        setCurrentLanguage(lang);
+        setIsArabic(lang === 'ar');
       } catch (error) {
         console.log('Error fetching language:', error);
       }
@@ -35,9 +37,9 @@ export default function CustomDrawerContent(props) {
   useEffect(() => {
     const loadUserInfo = async () => {
       try {
-        const fn  = await AsyncStorage.getItem('FirstName');
-        const ln  = await AsyncStorage.getItem('LastName');
-        const av  = await AsyncStorage.getItem('AvatarUrl');
+        const fn = await AsyncStorage.getItem('FirstName');
+        const ln = await AsyncStorage.getItem('LastName');
+        const av = await AsyncStorage.getItem('AvatarUrl');
 
         setFirstName(fn);
         setLastName(ln);
@@ -75,21 +77,29 @@ export default function CustomDrawerContent(props) {
       </View>
 
       {/* ====== عناصر الـ Drawer ====== */}
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, direction: isRTL ? "rtl" : "ltr" }}>
         <DrawerItemList {...props} />
       </View>
 
       {/* ====== زر تسجيل الخروج ====== */}
       <View style={styles.footer}>
         <DrawerItem
-          label={isArabic ? 'English' : 'العربية'}
+          label={() => (
+            <RTLText style={{ fontSize: 18 }}>
+              {isArabic ? 'English' : 'العربية'}
+            </RTLText>
+          )}
           icon={({ color, size }) => (
             <Ionicons name="language" color={color} size={size} />
           )}
           onPress={() => setLanguage(switchLanguage)}
         />
         <DrawerItem
-          label={i18n.t('logout')}
+          label={() => (
+            <RTLText style={{ fontSize: 18 }}>
+              {i18n.t('logout')}
+            </RTLText>
+          )}
           icon={({ color, size }) => (
             <Ionicons name="log-out-outline" color={color} size={size} />
           )}
@@ -118,6 +128,7 @@ const styles = StyleSheet.create({
   avatar: { width: 70, height: 70, borderRadius: 35, marginBottom: 10 },
   username: { fontSize: 16, color: '#fff', fontWeight: 'bold' },
   footer: {
+    direction: isRTL ? "rtl" : "ltr",
     borderTopWidth: 1,
     borderTopColor: '#ccc',
     paddingVertical: 10,

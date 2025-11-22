@@ -387,8 +387,16 @@
   "taxinvoice":"Tax Invoice",
   "downloadpicture":"Download Picture",
   "modelisnotsupported": "This model is not supported at the moment",
-  "nopoliciesfound" : "No policies found",
+  "nopoliciesfound" : "No policies found", 
   "failedtofetchforms"                       : "Failed to fetch forms" ,
   "noformsfound" : "No forms found."   ,
-  "retry"                 : "Retry"       
+  "retry"                 : "Retry"     ,
+  "policytype_" : "Policy Type :"  ,
+  "nodataavailable" : "No data available" ,
+  "search_": "Search ..." ,
+  "enabled": "Enabled" ,
+  "offernumber_" : "Offer Number:",
+  "reportnumber_" : "Report Number:" ,
+  "formnumber_"   :"Form Number:" ,
+  "policynumber_" :"Policy Number:"
 }  

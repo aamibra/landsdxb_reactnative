@@ -1,8 +1,9 @@
  
+import RTLText from '@/components/RTLText';
 import i18n from '@/Services/i18n';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 
 
@@ -15,8 +16,8 @@ const AccordionList = [
 ];
 
 const ItemList = [
-  { id: '1', title:   'applicantinfo' , accordiontype: 4, isdynamic: false, model: 'applicantinfo' },
-  { id: '2', title:   'areaname' , accordiontype: 4, isdynamic: true, model: 'areaname' },
+  { id: '1', title:   'applicantinfo'     , accordiontype: 4, isdynamic: false, model: 'applicantinfo' },
+  { id: '2', title:   'areaname'          , accordiontype: 4, isdynamic: false, model: 'areaname' },
   { id: '3', title:   'purposeevaluation' , accordiontype: 4, isdynamic: true, model: 'purpose' },
   { id: '4', title:   'usageevaluation'   , accordiontype: 4, isdynamic: true, model: 'usageevaluation' },
   { id: '5', title:   'buildtype'         , accordiontype: 4, isdynamic: true, model: 'buildtype' },
@@ -106,8 +107,8 @@ export default function Index({ navigation }: any) {
                 }
                 style={styles.accordionHeader}
               >
-                <Text style={styles.accordionHeaderText}>{ i18n.t(accordion.title)}</Text>
-                <Text>{nestedItems.length > 0 ? (isOpen ? '▲' : '▼') : ''}</Text>
+                <RTLText style={styles.accordionHeaderText}>{ i18n.t(accordion.title)}</RTLText>
+                <RTLText>{nestedItems.length > 0 ? (isOpen ? '▲' : '▼') : ''}</RTLText>
               </TouchableOpacity>
 
               {isOpen &&
@@ -117,7 +118,7 @@ export default function Index({ navigation }: any) {
                     onPress={() => handlePress(item)}
                     style={styles.item}
                   >
-                    <Text style={styles.itemText}>{ i18n.t(item.title)}</Text>
+                    <RTLText style={styles.itemText}>{ i18n.t(item.title)}</RTLText>
                   </TouchableOpacity>
                 ))}
             </View>

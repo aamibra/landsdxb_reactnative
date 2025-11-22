@@ -1,7 +1,8 @@
 import i18n from '@/Services/i18n';
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
-import { Animated, Easing, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Animated, Easing, Pressable, StyleSheet, View } from 'react-native';
 import ActionSheet from 'react-native-actions-sheet';
+import RTLText from './RTLText';
 
 export interface PolicySelectorHandle {
   openActionSheet: () => void;
@@ -79,9 +80,9 @@ const PolicySelector = forwardRef<PolicySelectorHandle, PolicySelectorProps>(
           <Animated.View style={[styles.fadeOverlay, { opacity: fadeAnim }]} />
         )}
         <View style={{ padding: 20 }}>
-          <Text style={[styles.sheetTitle, { textAlign: isRTL ? 'left' :  'right' }]}>
+          <RTLText style={[styles.sheetTitle]}>
             {i18n.t('selectyourpolicy')}
-          </Text>
+          </RTLText>
 
           {policyKeys.map((policy, index) => (
             <View key={policy.id}>
@@ -92,9 +93,9 @@ const PolicySelector = forwardRef<PolicySelectorHandle, PolicySelectorProps>(
                   pressed && { backgroundColor: '#f0f0f0' },
                 ]}
               >
-                <Text style={[styles.optionText, { textAlign: isRTL ? 'left' :  'right' }]}>
+                <RTLText style={[styles.optionText]}>
                   {i18n.t(policy.key)}
-                </Text>
+                </RTLText>
               </Pressable>
 
               {index !== policyKeys.length - 1 && <View style={styles.divider} />}
@@ -109,9 +110,9 @@ const PolicySelector = forwardRef<PolicySelectorHandle, PolicySelectorProps>(
               pressed && { backgroundColor: '#f0f0f0' },
             ]}
           >
-            <Text style={[styles.cancelText, { textAlign: isRTL ? 'left' :  'right'}]}>
+            <RTLText style={[styles.cancelText]}>
               {i18n.t('cancel')} 
-            </Text>
+            </RTLText>
           </Pressable>
         </View>
       </ActionSheet>

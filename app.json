@@ -39,7 +39,8 @@
       "favicon": "./assets/images/favicon.png"
     },
     "extra": {
-  
+        "allowRTL": true,
+        "forcesRTL": true,
       "eas": {
         "projectId": "514d6013-0885-4550-9469-bfc1d5be5016"
       }

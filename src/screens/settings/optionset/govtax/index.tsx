@@ -1,17 +1,18 @@
+import RTLText from '@/components/RTLText';
 import { activegovermenttax_api, deactivegovermenttax_api, govermenttax_api } from '@/constant/DXBConstant';
+import api from '@/Services/axiosInstance';
 import i18n from '@/Services/i18n';
 import { useActionSheet } from '@expo/react-native-action-sheet';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import axios from 'axios';
+import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useLayoutEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
   StyleSheet,
-  Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 
 interface GovermentTaxModel {
@@ -23,8 +24,8 @@ interface GovermentTaxModel {
 }
 
 
-const GovermentTaxScreen = () => {
-  const navigation = useNavigation();
+const GovermentTaxScreen = ({ navigation }: any) => {
+  
   const { showActionSheetWithOptions } = useActionSheet();
   const [item, setItem] = useState<GovermentTaxModel | null>(null);
   const [loading, setLoading] = useState(false);
@@ -39,10 +40,11 @@ const GovermentTaxScreen = () => {
   const fetchItem = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(govermenttax_api);
+      const res = await api.get(govermenttax_api);
       setItem(res.data);
-    } catch (error) {
-      Alert.alert(i18n.t('error') , i18n.t('failedtoloadtaxdata'));
+    } catch (error) { 
+      Toast.show({ type: 'error', text1: i18n.t('error') , text2: i18n.t('failedtoloadtaxdata') , position: 'bottom' });
+
     } finally {
       setLoading(false);
     }
@@ -53,10 +55,10 @@ const GovermentTaxScreen = () => {
     if (!item) return;
     try {
       setLoading(true);
-      await axios.get(deactivegovermenttax_api, { params: { optionid: item.id } });
+      await api.get(deactivegovermenttax_api, { params: { optionid: item.id } });
       await fetchItem();
-    } catch (error) {
-      Alert.alert(i18n.t('error'),  i18n.t('failedtobloacktaxitem'));
+    } catch (error) { 
+         Toast.show({ type: 'error', text1: i18n.t('error') , text2: i18n.t('failedtobloacktaxitem') , position: 'bottom' });
     } finally {
       setLoading(false);
     }
@@ -67,10 +69,15 @@ const GovermentTaxScreen = () => {
     if (!item) return;
     try {
       setLoading(true);
-      await axios.get(activegovermenttax_api, { params: { optionid: item.id } });
+      await api.get(activegovermenttax_api, { params: { optionid: item.id } });
       await fetchItem();
     } catch (error) {
-      Alert.alert(i18n.t('error'), i18n.t('failedtoactivatetaxitem') );
+
+      Toast.show({
+            type: 'error', text1: i18n.t('error') , 
+            text2: i18n.t('failedtoactivatetaxitem') ,
+             position: 'bottom' }); 
+
     } finally {
       setLoading(false);
     }
@@ -105,7 +112,7 @@ const GovermentTaxScreen = () => {
               ]
             );
           } else {
-            // Currently inactive => activate
+            // Currently inactive => activate 
             Alert.alert(
               i18n.t('confirm') ,
               i18n.t('areyousurewantsettaxactive'),
@@ -137,7 +144,7 @@ const GovermentTaxScreen = () => {
   if (!item) {
     return (
       <View  >
-        <Text> {i18n.t('notaxdatafound')} </Text>
+        <RTLText> {i18n.t('notaxdatafound')} </RTLText>
       </View>
     );
   }
@@ -145,16 +152,16 @@ const GovermentTaxScreen = () => {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={onPressItem} style={styles.card}>
-        <Text style={styles.label}>{i18n.t('taxnumber_')}</Text>
-        <Text style={styles.value}>{item.taxnumber}</Text>
+        <RTLText style={styles.label}>{i18n.t('taxnumber_')}</RTLText>
+        <RTLText style={styles.value}>{item.taxnumber}</RTLText>
 
-        <Text style={styles.label}>{i18n.t('vatnumber_')}</Text>
-        <Text style={styles.value}>{item.vat}</Text>
+        <RTLText style={styles.label}>{i18n.t('vatnumber_')}</RTLText>
+        <RTLText style={styles.value}>{item.vat}</RTLText>
 
-        <Text style={styles.label}>{i18n.t('status_')}</Text>
-        <Text style={[styles.value, { color: item.isactive === 1 ? 'green' : 'red' }]}>
-          {item.isactive === 1 ? i18n.t('active') : i18n.t('inactive') }
-        </Text>
+        <RTLText style={styles.label}>{i18n.t('status_')}</RTLText>
+        <RTLText style={[styles.value, { color: item.isactive === 1 ? 'green' : 'red' }]}>
+          {item.isactive === 1 ? i18n.t('enabled') : i18n.t('inactive') }
+        </RTLText>
       </TouchableOpacity>
     </View>
   );

@@ -1,30 +1,18 @@
+import BaseListScreen from '@/components/BaseListScreen';
+import RTLText from '@/components/RTLText';
 import { applincantinfo_api, deleteapplincantinfo_api } from '@/constant/DXBConstant';
+import FlatListStyles from '@/constant/LandsDxbStyle';
+import api from '@/Services/axiosInstance';
+import formatPhone from '@/Services/HelperService';
 import i18n from '@/Services/i18n';
-import { useActionSheet } from '@expo/react-native-action-sheet';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import axios from 'axios';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, I18nManager, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useLayoutEffect, useRef } from 'react';
+import { Alert, I18nManager, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 
+ const isRTL = I18nManager.isRTL;
 
-
-const PAGE_SIZE = 10;
-
-const AppInfoScreen = () => {
-   const navigation = useNavigation();
-   const isFocused = useIsFocused();
-   const { showActionSheetWithOptions } = useActionSheet();
- 
-   const [isArabic, setIsArabic] = useState(false);
-   const [switchLanguage, setSwitchLanguage] = useState('ar'); // opposite by default
-
-   const [applicantList, setApplicantList] = useState([]);
-   const [page, setPage] = useState(1);
-   const [hasMore, setHasMore] = useState(true);
-   const [loading, setLoading] = useState(false);
-   const [refreshing, setRefreshing] = useState(false);
-   const [searchQuery, setSearchQuery] = useState('');
+const AppInfoScreen = ({ navigation, route }: any) => {
+      const listRef = useRef(null);
 
    useLayoutEffect(() => {
       navigation.setOptions({
@@ -32,56 +20,7 @@ const AppInfoScreen = () => {
       });
    }, [navigation, i18n.language]);
 
-   useEffect(() => {
-      const fetchLanguage = async () => {
-         try {
-            const storedLanguage = await AsyncStorage.getItem('appLanguage');
-            const lang = storedLanguage || 'en'; 
-            setSwitchLanguage(storedLanguage === 'en' ? 'ar' : 'en');
-            setIsArabic(lang === 'ar');
-         } catch (error) {
-            console.log('Error fetching language:', error);
-         }
-      };
-
-      fetchLanguage();
-   }, []);
-
-
-   const fetchApplicants = async (reset = false) => {
-      if (loading) return;
-
-      try {
-         if (reset) setRefreshing(true);
-         else setLoading(true);
-
-         const currentPage = reset ? 1 : page;
-
-         const res = await axios.get(`${applincantinfo_api}`, {
-            params: { page: currentPage, limit: PAGE_SIZE, search: searchQuery },
-         });
-
-         const newData = res.data.data || res.data;
-         const total = res.data.total || 1000;
-
-         if (reset) {
-            setApplicantList(newData);
-            setPage(2);
-         } else {
-            setApplicantList(prev => [...prev, ...newData]);
-            setPage(currentPage + 1);
-         }
-
-         const newHasMore = (reset ? newData.length : applicantList.length + newData.length) < total;
-         setHasMore(newHasMore);
-      } catch (err) {
-         Alert.alert(i18n.t('error'), i18n.t('failedtoloadapplicants'));
-      } finally {
-         setLoading(false);
-         setRefreshing(false);
-      }
-   };
-
+  
    const deleteApplicant = async (id: number) => {
       Alert.alert(
          i18n.t('confirmdelete'),
@@ -92,204 +31,84 @@ const AppInfoScreen = () => {
                text: i18n.t('ok'),
                onPress: async () => {
                   try {
-                     await axios.get(`${deleteapplincantinfo_api}`, {
+                     await api.get(`${deleteapplincantinfo_api}`, {
                         params: { optionid: id },
                      });
+                     
                   } catch (err) {
+                     Toast.show({ type: 'error', text1: i18n.t('error'), text2: i18n.t('unexpectederrortryagain'), position: 'bottom' });
                      console.error(i18n.t('errordeletingapplicant_'), err);
                   }
-                  onRefresh();
+
+                  listRef.current?.refresh();
                },
             },
          ],
          { cancelable: false }
       );
    };
-
-   const onRefresh = () => {
-      setRefreshing(true);
-      setHasMore(true);
-      fetchApplicants(true);
-   };
-
-   useEffect(() => {
-      if (isFocused) {
-         onRefresh();
-      }
-   }, [isFocused]);
-
-   useEffect(() => {
-      const delayDebounce = setTimeout(() => {
-         onRefresh();
-      }, 500);
-      return () => clearTimeout(delayDebounce);
-   }, [searchQuery]);
-
-   const handleEndReached = () => {
-      if (!loading && hasMore && applicantList.length > 0) {
-         fetchApplicants();
-      }
-   };
-
-   const handleItemPress = (item: any) => {
-      const options = [i18n.t('edit'), i18n.t('delete'), i18n.t('cancel')];
-      const cancelButtonIndex = 2;
-
-      showActionSheetWithOptions(
-         {
-            options,
-            cancelButtonIndex,
-            title: `${i18n.t('actionsfor')}  ${item.applicantname}`,
-         },
-         async (selectedIndex) => {
-            switch (selectedIndex) {
-               case 0:
-                  navigation.navigate('addapplicantinfo', { mode: 'edit', applicant: item });
-                  break;
-               case 1:
-                  await deleteApplicant(item.id);
-                  break;
-               default:
-                  break;
-            }
-         }
-      );
-   };
-
-   const renderItem = ({ item }: any) => (
-      <TouchableOpacity onPress={() => handleItemPress(item)}>
-         <View style={styles.card}>
-            <View style={styles.row}>
-               <Text style={styles.label}>{i18n.t('name_')}</Text>
-               <Text style={styles.value}>{item.applicantname}</Text>
-            </View>
-
-            <View style={styles.row}>
-               <Text style={styles.label}>{i18n.t('mobile_')}</Text>
-               <Text style={styles.value}>{item.mobile}</Text>
-            </View>
-
-            <View style={styles.row}>
-               <Text style={styles.label}>{i18n.t('email_')}</Text>
-               <Text style={styles.value}>{item.email}</Text>
-            </View>
-
-            <View style={styles.row}>
-               <Text style={styles.label}>{i18n.t('address_')}</Text>
-               <Text style={styles.value}>{item.address}</Text>
-            </View>
-         </View>
-      </TouchableOpacity>
-   );
-
+  
    return (
-      <View style={{ flex: 1 }}>
-         <TextInput
-            style={styles.searchInput}
-            placeholder={i18n.t('searchapplicant_')}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-         />
+    <BaseListScreen
+         ref={listRef}
+         fetchData={async (page, search) => {
+            const res = await api.get(applincantinfo_api, {
+               params: { page, limit: 20, search },
+            });
 
-         <FlatList
-            data={applicantList}
-            keyExtractor={(item, index) => `${item.id}-${index}`}
-            renderItem={renderItem}
-            contentContainerStyle={styles.listContainer}
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            onEndReached={handleEndReached}
-            onEndReachedThreshold={0.5}
-            initialNumToRender={10}
-            windowSize={5}
-            ListFooterComponent={
-               loading && !refreshing && applicantList.length > 0 ? (
-                  <ActivityIndicator style={{ marginVertical: 20 }} />
-               ) : null
-            }
-            ListEmptyComponent={
-               !loading && !refreshing ? (
-                  <View style={{ padding: 20, alignItems: 'center' }}>
-                     <Text>No applicants found.</Text>
-                  </View>
-               ) : null
-            }
-         />
+            return {
+               data: res.data.data,
+               total: res.data.total
+            };
+         }}
 
-         <TouchableOpacity
-            style={styles.fab}
-            onPress={() => navigation.navigate('addapplicantinfo')}
-         >
-            <Text style={styles.fabIcon}>＋</Text>
-         </TouchableOpacity>
-      </View>
+         renderItemCard={(item) => (
+            <View style={FlatListStyles.itemCard}>
+               <View style={FlatListStyles.row}>
+                  <RTLText style={FlatListStyles.label}>{i18n.t("name_")}</RTLText>
+                  <RTLText style={FlatListStyles.value}>{item.applicantname}</RTLText>
+               </View>
+
+               <View style={FlatListStyles.row}>
+                  <RTLText style={FlatListStyles.label}>{i18n.t("mobile_")}</RTLText>
+                  <RTLText style={FlatListStyles.value}>{formatPhone( item.mobile)}</RTLText>
+               </View>
+
+               <View style={FlatListStyles.row}>
+                  <RTLText style={FlatListStyles.label}>{i18n.t("email_")}</RTLText>
+                  <RTLText style={FlatListStyles.value}>{item.email}</RTLText>
+               </View>
+
+               <View style={FlatListStyles.row}>
+                  <RTLText style={FlatListStyles.label}>{i18n.t("address_")}</RTLText>
+                  <RTLText style={FlatListStyles.value}>{item.address}</RTLText>
+               </View>
+            </View>
+         )}
+
+         /* ActionSheet عند الضغط على عنصر */
+         actionSheetOptions={(item) => ({
+            title: `${i18n.t('actionsfor')} ${item.applicantname}`,
+            options: [
+               i18n.t('edit'),
+               i18n.t('delete'),
+               i18n.t('cancel')
+            ],
+            cancelIndex: 2,
+            onSelect: async (i) => {
+               if (i === 0) navigation.navigate('addapplicantinfo', { mode: 'edit', applicant: item });
+               if (i === 1) await deleteApplicant(item.id);
+              
+            }
+         })}
+
+         /* ActionSheet زر الإضافة */
+         onAddPress={() => { navigation.navigate('addapplicantinfo' ) }}
+      />
    );
 };
 
-const styles = StyleSheet.create({
-   listContainer: { padding: 16 },
-   itemContainer: { backgroundColor: '#fff', padding: 14, borderRadius: 8, marginBottom: 12 },
-   title: { fontSize: 16, fontWeight: 'bold' },
-   searchInput: {
-      margin: 16,
-      padding: 10,
-      borderWidth: 1,
-      borderColor: '#ccc',
-      borderRadius: 8,
-   },
-   fab: {
-      position: 'absolute',
-      bottom: 20,
-      right: 20,
-      backgroundColor: '#2196F3',
-      width: 56,
-      height: 56,
-      borderRadius: 28,
-      justifyContent: 'center',
-      alignItems: 'center',
-      elevation: 5,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.3,
-      shadowRadius: 3,
-   },
-   fabIcon: {
-      color: 'white',
-      fontSize: 24,
-      lineHeight: 28,
-   },
-   card: {
-      backgroundColor: '#fff',
-      borderRadius: 10,
-      padding: 12,
-      marginVertical: 8,
-      marginHorizontal: 10,
-      shadowColor: '#000',
-      shadowOpacity: 0.1,
-      shadowOffset: { width: 0, height: 2 },
-      shadowRadius: 4,
-      elevation: 3,
-   },
-   row: {
-      flexDirection: I18nManager.isRTL ? 'row-reverse' : 'row',
-      alignItems: 'center',
-      marginVertical: 4,
-      flexWrap: 'wrap',
-   },
-   label: {
-      fontWeight: 'bold',
-      color: '#333',
-      fontSize: 15,
-      marginHorizontal: 6,
-      textAlign: I18nManager.isRTL ? 'right' : 'left',
-   },
-   value: {
-      color: '#555',
-      fontSize: 15,
-      flexShrink: 1,
-      textAlign: I18nManager.isRTL ? 'right' : 'left',
-   },
-});
+
 
 
 export default AppInfoScreen;

@@ -4,7 +4,6 @@ import { applyMask } from '@/constant/applyMask';
 import { creatvlandpolicy_api, e, getvlandpolicy_api, updatevlandpolicy_api } from '@/constant/DXBConstant';
 import { getDropdownDataWithCache } from '@/Services/CacheService';
 import i18n from '@/Services/i18n';
-import axios from 'axios';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
@@ -17,13 +16,14 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import RNPickerSelect from 'react-native-picker-select';
 
 import FilePreviewModal from '@/components/FilePreviewModal';
+import RTLText from '@/components/RTLText';
+import api from '@/Services/axiosInstance';
 import * as ImagePicker from 'expo-image-picker';
+import DropDownPicker from 'react-native-dropdown-picker';
 import PagerView from 'react-native-pager-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 
 const isRTL = I18nManager.isRTL;
 
@@ -64,6 +64,13 @@ const isArabic = i18n.t('lang') === 'ar';
 const VacantLand = ({ navigation, route }: any) => {
   const isEdit = route.params?.mode === 'edit';
   const policyid = route.params?.policyid;
+  const [open, setOpen] = useState(false);
+  const [openTypeOfValuation, setOpenTypeOfValuation] = useState(false);
+  const [openCategoryOwnLand, setOpenCategoryOwnLand] = useState(false);
+  const [openLandTypeNo, setOpenLandTypeNo] = useState(false);
+  const [openUsage, setOpenUsage] = useState(false);
+  const [openIsShowNote, setOpenIsShowNote] = useState(false);
+ 
   const [purposeItems, setPurposeItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [dropdown, setDropdown] = useState<Record<string, { id: number; text: string, name_en: string, name_ar: string }[]>>({});
@@ -164,7 +171,7 @@ const VacantLand = ({ navigation, route }: any) => {
       if (!isEdit || !policyid) return;
 
       try {
-        const res = await axios.get(getvlandpolicy_api, {
+        const res = await api.get(getvlandpolicy_api, {
           params: { policyid },
         });
 
@@ -843,7 +850,7 @@ const VacantLand = ({ navigation, route }: any) => {
         {/* الصفحة الأولى */}
         <ScrollView contentContainerStyle={styles.page} key="1">
           <View style={styles.labelDirection} >
-            <Text style={styles.header}> {i18n.t('vacantlandform')} </Text>
+            <RTLText style={styles.header}> {i18n.t('vacantlandform')} </RTLText>
           </View>
           {/* قسم المعلومات الشخصية */}
           <AccordionSection
@@ -852,51 +859,62 @@ const VacantLand = ({ navigation, route }: any) => {
             toggle={() => toggleSection('applicant')}
           >
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('applicanttrn')}</Text>
+              <RTLText style={styles.label}>{i18n.t('applicanttrn')}</RTLText>
             </View>
             <TextInput style={styles.input} placeholder={i18n.t('applicanttrn')} value={formData.applicanttrn} onChangeText={(text) => handleChange('applicanttrn', text)} />
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('applicantname')}</Text>
+              <RTLText style={styles.label}>{i18n.t('applicantname')}</RTLText>
             </View>
             <TextInput style={styles.input} placeholder={i18n.t('applicantname')} value={formData.applicantname} onChangeText={(text) => handleChange('applicantname', text)} />
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('mobile')} </Text>
+              <RTLText style={styles.label}>{i18n.t('mobile')} </RTLText>
             </View>
             <TextInput style={styles.input} placeholder={i18n.t('mobile')} value={formData.applicantmobile} onChangeText={(text) => handleChange('applicantmobile', applyMask(text, '(999) 999-9999'))} keyboardType="numeric" />
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('email')}</Text>
+              <RTLText style={styles.label}>{i18n.t('email')}</RTLText>
             </View>
             <TextInput style={styles.input} placeholder={i18n.t('email')} value={formData.applicantemail} onChangeText={(text) => handleEmailChange('applicantemail', text)} onBlur={(text) => handleBlur('applicantemail')} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} />
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('deliveryaddress')}</Text>
+              <RTLText style={styles.label}>{i18n.t('deliveryaddress')}</RTLText>
             </View>
 
             <TextInput style={styles.inputarea} placeholder={i18n.t('deliveryaddress')} value={formData.deliveryaddress} onChangeText={(text) => handleChange('deliveryaddress', text)} />
 
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('selectpurpose')}</Text>
+              <RTLText style={styles.label}>{i18n.t('selectpurpose')}</RTLText>
             </View>
 
             <View style={styles.pickerWrapper} >
-              <RNPickerSelect
-                onValueChange={(value) => handleChange('purpose', value)}
+              <DropDownPicker
+                open={open}
                 value={formData.purpose}
                 items={purposeItems}
-                placeholder={{ label: i18n.t('selectpurpose'), value: null }}
-                style={pickerStyle}
-                useNativeAndroidPickerStyle={false}
+                setOpen={setOpen}
+                setValue={(callback) => {
+                  const val = callback(formData.purpose);
+                  handleChange('purpose', val);
+                }}
+                setItems={() => { }}
+                placeholder={i18n.t('selectpurpose')}
+                listMode="MODAL"
+                modalTitle={i18n.t('selectpurpose')}
+                modalAnimationType="slide"
+                modalContentContainerStyle={{
+                  paddingHorizontal: 20
+                }}
               />
             </View>
+
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('selecttypeofvaluation')}</Text>
+              <RTLText style={styles.label}>{i18n.t('selecttypeofvaluation')}</RTLText>
             </View>
 
-            <View style={styles.pickerWrapper} >
-              <RNPickerSelect
-                onValueChange={(itemValue) => handleChange('typeofvaluation', itemValue)}
+            <View style={[styles.pickerWrapper, { zIndex: 4000 }]} >
+
+              <DropDownPicker
+                open={openTypeOfValuation}
                 value={formData.typeofvaluation}
-                placeholder={{ label: i18n.t('selecttypeofvaluation'), value: null }}
-                items={Object.entries(dropdown)
+                items={ Object.entries(dropdown)
                   .filter(([key]) => key === 'vlandevatype')
                   .flatMap(([menuKey, options]) =>
                     options.map((item) => ({
@@ -905,8 +923,20 @@ const VacantLand = ({ navigation, route }: any) => {
                     }))
                   )
                 }
-                style={pickerStyle}
-                useNativeAndroidPickerStyle={false}
+                setOpen={setOpenTypeOfValuation}
+                setValue={(callback) => {
+                  const val = callback(formData.typeofvaluation);
+                  handleChange('typeofvaluation', val);
+                }}
+                setItems={() => { }}
+                placeholder={i18n.t('selecttypeofvaluation')}
+                listMode="MODAL"
+                modalTitle={i18n.t('selecttypeofvaluation')}
+                modalAnimationType="slide"
+                modalContentContainerStyle={{
+                  paddingHorizontal: 20,
+                  paddingVertical: 20
+                }}
               />
             </View>
           </AccordionSection>
@@ -919,31 +949,54 @@ const VacantLand = ({ navigation, route }: any) => {
           >
             {/* Category Land */}
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('categoryland')}</Text>
+              <RTLText style={styles.label}>{i18n.t('categoryland')}</RTLText>
             </View>
-            <View style={styles.pickerWrapper}>
-              <RNPickerSelect
-                onValueChange={(itemValue) => handleChange('categoryownland', itemValue)}
+            <View style={[styles.pickerWrapper, { zIndex: 4000 }]} >
+              <DropDownPicker
+                open={openCategoryOwnLand}
                 value={formData.categoryownland}
-                placeholder={{ label: i18n.t('selectcategoryland'), value: '' }}
                 items={categorylanditems}
-                style={pickerStyle}
-                useNativeAndroidPickerStyle={false}
+                setOpen={setOpenCategoryOwnLand}
+                setValue={(callback) => {
+                  const val = callback(formData.categoryownland);
+                  handleChange('categoryownland', val);
+                }}
+                setItems={() => { }}
+                placeholder={i18n.t('selectcategoryland')}
+                listMode="SCROLLVIEW"
+                modalTitle={i18n.t('selectcategoryland')}
+                modalAnimationType="slide"
+                scrollViewProps={{ nestedScrollEnabled: true }}
+                modalContentContainerStyle={{
+                  paddingHorizontal: 20,
+                  paddingVertical: 20
+                }}
               />
             </View>
 
             {/* Land Type Number */}
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('landtypenumber')} </Text>
+              <RTLText style={styles.label}>{i18n.t('landtypenumber')} </RTLText>
             </View>
-            <View style={styles.pickerWrapper}>
-              <RNPickerSelect
-                onValueChange={(itemValue) => handleChange('landtypeno', itemValue)}
+            <View style={[styles.pickerWrapper, { zIndex: 3000 }]}>
+              <DropDownPicker
+                open={openLandTypeNo}
                 value={formData.landtypeno}
-                placeholder={{ label: i18n.t('selectlandtypenumber'), value: '' }}
                 items={landTypeItems}
-                style={pickerStyle}
-                useNativeAndroidPickerStyle={false}
+                setOpen={setOpenLandTypeNo}
+                setValue={(callback) => {
+                  const val = callback(formData.landtypeno);
+                  handleChange('landtypeno', val);
+                }}
+                setItems={() => { }}
+                placeholder={i18n.t('selectlandtypenumber')}
+                listMode="SCROLLVIEW"
+                modalTitle={i18n.t('selectlandtypenumber')}
+                modalAnimationType="slide"
+                modalContentContainerStyle={{
+                  paddingHorizontal: 20,
+                  paddingVertical: 20
+                }}
               />
             </View>
 
@@ -952,7 +1005,7 @@ const VacantLand = ({ navigation, route }: any) => {
             {formData.landtypeno === "1" && (
               <View>
                 <View style={styles.labelDirection} >
-                  <Text style={styles.label}>{i18n.t('plotnumber')}</Text>
+                  <RTLText style={styles.label}>{i18n.t('plotnumber')}</RTLText>
                 </View>
                 <TextInput
                   style={styles.input}
@@ -967,7 +1020,7 @@ const VacantLand = ({ navigation, route }: any) => {
             {formData.landtypeno === "2" && (
               <View>
                 <View style={styles.labelDirection} >
-                  <Text style={styles.label}>{i18n.t('municipalitynumber')}</Text>
+                  <RTLText style={styles.label}>{i18n.t('municipalitynumber')}</RTLText>
                 </View>
                 <TextInput
                   style={styles.input}
@@ -982,7 +1035,7 @@ const VacantLand = ({ navigation, route }: any) => {
             )}
 
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('selectareaname')}</Text>
+              <RTLText style={styles.label}>{i18n.t('selectareaname')}</RTLText>
             </View>
             <AreaNamePicker
               value={formData.areanameid}
@@ -992,11 +1045,11 @@ const VacantLand = ({ navigation, route }: any) => {
               }}
             />
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('landareasqf')}</Text>
+              <RTLText style={styles.label}>{i18n.t('landareasqf')}</RTLText>
             </View>
             <TextInput style={styles.input} placeholder={i18n.t('landareasqf')} value={formData.areasize} onBlur={(text) => handleCommaBlur('areasize', formData.areasize)} onChangeText={(text) => handleSmartChange('areasize', text)} keyboardType="numeric" />
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('landareasqm')}</Text>
+              <RTLText style={styles.label}>{i18n.t('landareasqm')}</RTLText>
             </View>
 
             <TextInput style={styles.input} placeholder={i18n.t('landareasqm')} value={formData.landareasqm} onBlur={(text) => handleCommaBlur('landareasqm', formData.landareasqm)} onChangeText={(text) => handleSmartChange('landareasqm', text)} keyboardType="numeric" />
@@ -1004,24 +1057,23 @@ const VacantLand = ({ navigation, route }: any) => {
             {showExtraFields && (
               <View >
                 <View style={styles.labelDirection} >
-                  <Text style={styles.label}>{i18n.t('arearatio')}</Text>
+                  <RTLText style={styles.label}>{i18n.t('arearatio')}</RTLText>
                 </View>
                 <TextInput style={styles.input} placeholder={i18n.t('arearatio')} value={formData.arearatio} onBlur={(text) => handleCommaBlur('arearatio', formData.arearatio)} onChangeText={(text) => handleSmartChange('arearatio', text)} keyboardType="numeric" />
                 <View style={styles.labelDirection} >
-                  <Text style={styles.label}>{i18n.t('ratioallowd')}</Text>
+                  <RTLText style={styles.label}>{i18n.t('ratioallowd')}</RTLText>
                 </View>
                 <TextInput style={styles.input} placeholder={i18n.t('ratioallowd')} value={formData.areaallowed} onBlur={(text) => handleCommaBlur('areaallowed', formData.areaallowed)} onChangeText={(text) => handleSmartChange('areaallowed', text)} keyboardType="numeric" />
               </View>
             )}
 
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('selectusage')}</Text>
+              <RTLText style={styles.label}>{i18n.t('selectusage')}</RTLText>
             </View>
-            <View style={styles.pickerWrapper}>
-              <RNPickerSelect
-                onValueChange={(itemValue) => handleChange("usage", itemValue)}
+            <View style={[styles.pickerWrapper, { zIndex: 1000 }]}>
+              <DropDownPicker
+                open={openUsage}
                 value={formData.usage}
-                placeholder={{ label: i18n.t('selectusage'), value: null }}
                 items={Object.entries(dropdown)
                   .filter(([key]) => key === 'usage')
                   .flatMap(([menuKey, options]) =>
@@ -1029,13 +1081,28 @@ const VacantLand = ({ navigation, route }: any) => {
                       label: isArabic ? item.name_ar : item.name_en,
                       value: item.id,
                     }))
-                  )}
-                style={pickerStyle}
-                useNativeAndroidPickerStyle={false}
+                  )
+                }
+                setOpen={setOpenUsage}
+                setValue={(callback) => {
+                  const val = callback(formData.usage);
+                  handleChange('usage', val);
+                }}
+                setItems={() => { }}
+                placeholder={i18n.t('selectusage')}
+                listMode="MODAL"
+                modalTitle={i18n.t('selectusage')}
+                modalAnimationType="slide"
+                modalContentContainerStyle={{
+                  paddingHorizontal: 20,
+                  paddingVertical: 20
+                }}
+                zIndex={1000}
+                zIndexInverse={500}
               />
             </View>
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('height')}</Text>
+              <RTLText style={styles.label}>{i18n.t('height')}</RTLText>
             </View>
             <TextInput style={styles.input} placeholder={i18n.t('height')} value={formData.height} onChangeText={(text) => handleChange('height', text)} />
           </AccordionSection>
@@ -1047,22 +1114,22 @@ const VacantLand = ({ navigation, route }: any) => {
             toggle={() => toggleSection('documents')}
           >
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('sitemap')}</Text>
+              <RTLText style={styles.label}>{i18n.t('sitemap')}</RTLText>
             </View>
             <TouchableOpacity style={styles.uploadButton} onPress={() => pickDocument('siteMap')}>
-              <Text>{formData.sitemapname || (formData.siteMap ? i18n.t('sitemapuploaded') : i18n.t('uploadsitemap'))}</Text>
+              <RTLText>{formData.sitemapname || (formData.siteMap ? i18n.t('sitemapuploaded') : i18n.t('uploadsitemap'))}</RTLText>
             </TouchableOpacity>
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('titledeed')}</Text>
+              <RTLText style={styles.label}>{i18n.t('titledeed')}</RTLText>
             </View>
             <TouchableOpacity style={styles.uploadButton} onPress={() => pickDocument('titleDeed')}>
-              <Text>{formData.titledeedname || (formData.titleDeed ? i18n.t('titledeeduploaded') : i18n.t('uploadtitledeed'))}</Text>
+              <RTLText>{formData.titledeedname || (formData.titleDeed ? i18n.t('titledeeduploaded') : i18n.t('uploadtitledeed'))}</RTLText>
             </TouchableOpacity>
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('otherdocument')}</Text>
+              <RTLText style={styles.label}>{i18n.t('otherdocument')}</RTLText>
             </View>
             <TouchableOpacity style={styles.uploadButton} onPress={() => pickDocument('otherDoc')}>
-              <Text>{formData.otherdocumentname || (formData.otherDoc ? i18n.t('otherdocumentuploaded') : i18n.t('uploadotherdocument'))}</Text>
+              <RTLText>{formData.otherdocumentname || (formData.otherDoc ? i18n.t('otherdocumentuploaded') : i18n.t('uploadotherdocument'))}</RTLText>
             </TouchableOpacity>
             {showPreviewButton && (
               <View style={{ margin: 10 }}>
@@ -1074,7 +1141,7 @@ const VacantLand = ({ navigation, route }: any) => {
 
           <View style={{ marginHorizontal: 20 }}>
             <TouchableOpacity style={styles.button} onPress={() => goToPage(1)}>
-              <Text style={styles.buttonText}>{i18n.t('next')}</Text>
+              <RTLText style={styles.buttonText}>{i18n.t('next')}</RTLText>
             </TouchableOpacity>
           </View>
 
@@ -1083,7 +1150,7 @@ const VacantLand = ({ navigation, route }: any) => {
         {/* الصفحة الثانية - كما كانت */}
         <ScrollView contentContainerStyle={styles.page} key="2">
           <View style={styles.labelDirection} >
-            <Text style={styles.header}>{i18n.t('evaluationvacantland')}</Text>
+            <RTLText style={styles.header}>{i18n.t('evaluationvacantland')}</RTLText>
           </View>
           <AccordionSection
             title={i18n.t('landareaevaluation')}
@@ -1092,45 +1159,58 @@ const VacantLand = ({ navigation, route }: any) => {
           >
             <SectionLabel title={i18n.t('valuedependcost')} />
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('pricearealand')}</Text>
+              <RTLText style={styles.label}>{i18n.t('pricearealand')}</RTLText>
             </View>
             {showBuildArea && showExtraFields && (
               <View >
                 <View style={styles.labelDirection} >
-                  <Text style={styles.label}>{i18n.t('buildarea')}</Text>
+                  <RTLText style={styles.label}>{i18n.t('buildarea')}</RTLText>
                 </View>
                 <TextInput style={styles.input} placeholder={i18n.t('buildarea')} onBlur={(text) => handleCommaBlur('efratio', formData.efratio)} value={formData.efratio} onChangeText={(text) => handleSmartChange('efratio', text)} keyboardType="numeric" />
               </View>
             )}
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('pricesqf')}</Text>
+              <RTLText style={styles.label}>{i18n.t('pricesqf')}</RTLText>
             </View>
             <TextInput style={styles.input} placeholder={i18n.t('sqf')} onBlur={(text) => handleCommaBlur('areaprice', formData.areaprice)} value={formData.areaprice} onChangeText={(text) => handleSmartChange('areaprice', text)} keyboardType="numeric" />
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('pricesqm')}</Text>
+              <RTLText style={styles.label}>{i18n.t('pricesqm')}</RTLText>
             </View>
             <TextInput style={styles.input} placeholder={i18n.t('sqm')} onBlur={(text) => handleCommaBlur('areapricesqm', formData.areapricesqm)} value={formData.areapricesqm} onChangeText={(text) => handleSmartChange('areapricesqm', text)} keyboardType="numeric" />
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('grossvalue')}</Text>
+              <RTLText style={styles.label}>{i18n.t('grossvalue')}</RTLText>
             </View>
             <TextInput style={styles.input} placeholder={i18n.t('grossvalue')} onBlur={(text) => handleCommaBlur('grossvalue', formData.grossvalue)} value={formData.grossvalue} onChangeText={(text) => handleChange('grossvalue', text)} keyboardType="numeric" />
             <View style={styles.dottedLine} />
             {/* Is Show Certificate Note */}
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('showcertificatenote')}</Text>
+              <RTLText style={styles.label}>{i18n.t('showcertificatenote')}</RTLText>
             </View>
             <View style={styles.pickerWrapper}>
-              <RNPickerSelect
-                onValueChange={(itemValue) => handleChange('isshownote', itemValue)}
+              <DropDownPicker
+                open={openIsShowNote}
                 value={formData.isshownote}
-                placeholder={{ label: i18n.t('showcertificatenote'), value: null }}
                 items={showNoteItems}
-                style={pickerStyle}
-                useNativeAndroidPickerStyle={false}
+                setOpen={setOpenIsShowNote}
+                setValue={(callback) => {
+                  const val = callback(formData.isshownote);
+                  handleChange('isshownote', val);
+                }}
+                setItems={() => { }} 
+                placeholder={i18n.t('showcertificatenote')} 
+                listMode="SCROLLVIEW"
+                modalTitle={i18n.t('showcertificatenote')}
+                modalAnimationType="slide"
+                modalContentContainerStyle={{
+                  paddingHorizontal: 20,
+                  paddingVertical: 20
+                }}  
+                zIndex={6000}
+                zIndexInverse={3000}
               />
             </View>
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('note')}</Text>
+              <RTLText style={styles.label}>{i18n.t('note')}</RTLText>
             </View>
             <TextInput style={[styles.input, { height: 100 }]} placeholder={i18n.t('note')} multiline value={formData.note} onChangeText={(text) => handleChange('note', text)} />
           </AccordionSection>
@@ -1141,7 +1221,7 @@ const VacantLand = ({ navigation, route }: any) => {
             toggle={() => toggleSection('certificate')}
           >
             <View style={styles.labelDirection} >
-              <Text style={styles.label}>{i18n.t('certificatenote')}</Text>
+              <RTLText style={styles.label}>{i18n.t('certificatenote')}</RTLText>
             </View>
             <TextInput
               style={[styles.input, { height: 100 }]}
@@ -1153,7 +1233,7 @@ const VacantLand = ({ navigation, route }: any) => {
           </AccordionSection>
 
           <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-            <Text style={styles.buttonText}>{i18n.t('submit')}</Text>
+            <RTLText style={styles.buttonText}>{i18n.t('submit')}</RTLText>
           </TouchableOpacity>
         </ScrollView>
 
@@ -1297,7 +1377,6 @@ const pickerStyle = StyleSheet.create({
     paddingVertical: 12,
     color: '#000',
     backgroundColor: '#fff',
-    textAlign: isRTL ? "right" : "left",
   },
   inputAndroid: {
     height: 50,
@@ -1307,7 +1386,18 @@ const pickerStyle = StyleSheet.create({
     paddingHorizontal: 10,
     color: '#000',
     backgroundColor: '#fff',
-    textAlign: isRTL ? "right" : "left",
+  },
+  dropdownContainer: {
+    borderColor: '#ccc',
+    borderRadius: 8,
+  },
+  dropdown: {
+    height: 50,
+    borderColor: 'gray',
+    borderWidth: 0.5,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    marginBottom: 16,
   },
   placeholder: { color: '#999', textAlign: isRTL ? "right" : "left", },
 });
